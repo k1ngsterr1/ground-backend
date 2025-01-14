@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int          @id @default(autoincrement())
+  email     String       @unique
+  password  String
+  role      String
+  createdAt DateTime     @default(now())
+    favorites  Favorite[]
+      comparisons  Comparison[]
+
+
+}
+
+model Favorite {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  propertyId  Int
+  user        User      @relation(fields: [userId], references: [id])
+  property    Property  @relation(fields: [propertyId], references: [id])
+  createdAt   DateTime  @default(now())
+}
+
+
+model Property {
+  id        Int          @id @default(autoincrement())
+  name    String
+  image String[]
+  square Int
+  price Int
+  number Int
+  contact String
+  agent Boolean
+  owner Boolean
+  type  String
+  description   String
+  location  String
+    favoritedBy Favorite[] // Relation to the Favorite model
+      comparisonProperties ComparisonProperty[]
+
+}
+
+model Comparison {
+  id          Int          @id @default(autoincrement())
+  name        String       // Optional name for the comparison group
+  userId      Int
+  user        User         @relation(fields: [userId], references: [id])
+  properties  ComparisonProperty[]
+  createdAt   DateTime     @default(now())
+}
+
+model ComparisonProperty {
+  id          Int          @id @default(autoincrement())
+  comparisonId Int
+  propertyId  Int
+  comparison  Comparison   @relation(fields: [comparisonId], references: [id])
+  property    Property     @relation(fields: [propertyId], references: [id])
+}
+
