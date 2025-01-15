@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ComparisonsService } from './comparison.service';
 
 @Controller('comparisons')
@@ -6,11 +6,8 @@ export class ComparisonsController {
   constructor(private readonly comparisonsService: ComparisonsService) {}
 
   @Post(':userId')
-  createComparison(
-    @Param('userId') userId: string,
-    @Body('name') name: string,
-  ) {
-    return this.comparisonsService.createComparison(+userId, name);
+  createComparison(@Param('userId') userId: string) {
+    return this.comparisonsService.createComparison(+userId);
   }
 
   @Post(':comparisonId/property/:propertyId')

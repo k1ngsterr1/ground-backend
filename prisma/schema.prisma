@@ -55,7 +55,6 @@ model Property {
 
 model Comparison {
   id          Int          @id @default(autoincrement())
-  name        String       // Optional name for the comparison group
   userId      Int
   user        User         @relation(fields: [userId], references: [id])
   properties  ComparisonProperty[]

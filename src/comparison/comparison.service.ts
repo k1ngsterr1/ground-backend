@@ -5,11 +5,10 @@ import { PrismaService } from 'src/shared/prisma/prisma.service';
 export class ComparisonsService {
   constructor(private prisma: PrismaService) {}
 
-  async createComparison(userId: number, name: string) {
+  async createComparison(userId: number) {
     return this.prisma.comparison.create({
       data: {
         userId,
-        name,
       },
     });
   }
@@ -18,6 +17,7 @@ export class ComparisonsService {
     const property = await this.prisma.property.findUnique({
       where: { id: propertyId },
     });
+
     if (!property) {
       throw new NotFoundException(`Property with ID ${propertyId} not found`);
     }
