@@ -3,6 +3,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UserAuthModule } from './auth/auth.module';
 import { ComparisonsModule } from './comparison/comparison.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { PropertiesModule } from './property/property.module';
@@ -15,6 +16,7 @@ import { UsersModule } from './users/users.module';
     SharedModule,
     UsersModule,
     UploadModule,
+    UserAuthModule,
     UsersModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),

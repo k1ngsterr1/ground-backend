@@ -9,7 +9,18 @@ export class PropertiesService {
 
   async create(createPropertyDto: CreatePropertyDto) {
     return this.prisma.property.create({
-      data: createPropertyDto,
+      data: {
+        ...createPropertyDto,
+        square: Number(createPropertyDto.square),
+        price: Number(createPropertyDto.price),
+        number: Number(createPropertyDto.number),
+        agent:
+          createPropertyDto.agent === ('true' as any) ||
+          createPropertyDto.agent === true, // Convert to boolean if string
+        owner:
+          createPropertyDto.owner === ('true' as any) ||
+          createPropertyDto.owner === true, // Convert to boolean if string
+      },
     });
   }
 
