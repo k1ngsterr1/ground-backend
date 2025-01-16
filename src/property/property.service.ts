@@ -47,7 +47,23 @@ export class PropertiesService {
   }
 
   async remove(id: number) {
-    const property = await this.findOne(id); // Ensures property exists
+    // Check if the property exists
+    const property = await this.findOne(id);
+    if (!property) {
+      throw new NotFoundException(`Property with ID ${id} not found`);
+    }
+
+    // Remove related records in ComparisonProperty
+    await this.prisma.comparisonProperty.deleteMany({
+      where: { propertyId: id },
+    });
+
+    // Remove related records in Favorites
+    await this.prisma.favorite.deleteMany({
+      where: { propertyId: id },
+    });
+
+    // Finally, delete the property
     return this.prisma.property.delete({
       where: { id },
     });
