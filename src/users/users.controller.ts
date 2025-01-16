@@ -59,7 +59,7 @@ export class UsersController {
   }
 
   @Patch('role/:id')
-  @UseGuards(AdminGuard) // Restrict to admin users
+  @UseGuards(AdminGuard)
   async changeRole(@Param('id') id: string, @Body('role') role: string) {
     if (!['user', 'manager', 'admin'].includes(role)) {
       throw new BadRequestException('Invalid role');
