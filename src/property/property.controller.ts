@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UploadedFiles,
   UseGuards,
@@ -51,13 +52,32 @@ export class PropertiesController {
   }
 
   @Get()
-  findAll() {
-    return this.propertiesService.findAll();
+  findAll(
+    @Query('priceMin') priceMin?: number,
+    @Query('priceMax') priceMax?: number,
+    @Query('squareMin') squareMin?: number,
+    @Query('squareMax') squareMax?: number,
+    @Query('location') location?: string,
+  ) {
+    // Pass the filters to the service
+    return this.propertiesService.findAll({
+      priceMin: priceMin ? +priceMin : undefined,
+      priceMax: priceMax ? +priceMax : undefined,
+      squareMin: squareMin ? +squareMin : undefined,
+      squareMax: squareMax ? +squareMax : undefined,
+      location,
+    });
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.propertiesService.findOne(+id);
+  }
+
+  @Get('/get/locations')
+  async getAllLocations() {
+    const locations = await this.propertiesService.getAllLocations();
+    return locations.map((property) => property.location); // Return only the location strings
   }
 
   @Patch(':id')

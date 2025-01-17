@@ -253,6 +253,30 @@
         ]
       }
     },
+    "/api/auth/register-manager": {
+      "post": {
+        "operationId": "AuthController_registerManager",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
     "/api/auth/check-token": {
       "get": {
         "operationId": "AuthController_checkToken",
@@ -292,7 +316,48 @@
       },
       "get": {
         "operationId": "PropertiesController_findAll",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "priceMin",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "priceMax",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "squareMin",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "squareMax",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "location",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": ""
@@ -368,6 +433,20 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Properties"
+        ]
+      }
+    },
+    "/api/properties/get/locations": {
+      "get": {
+        "operationId": "PropertiesController_getAllLocations",
+        "parameters": [],
         "responses": {
           "200": {
             "description": ""

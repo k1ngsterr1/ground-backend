@@ -51,4 +51,24 @@ export class AuthService {
 
     return { user, token };
   }
+
+  async registerManager(data: RegisterDto) {
+    // Проверяем, есть ли уже зарегистрированный администратор
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    // Создаём нового пользователя
+    const user = await this.prisma.user.create({
+      data: {
+        role: 'manager',
+        email: data.email,
+        password: hashedPassword,
+      },
+    });
+
+    const payload = { email: user.email, sub: user.id, role: user.role };
+    const token = this.jwtService.sign(payload);
+
+    return { user, token };
+  }
 }

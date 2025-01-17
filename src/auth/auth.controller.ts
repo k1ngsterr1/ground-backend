@@ -70,6 +70,27 @@ export class AuthController {
     }
   }
 
+  @Post('register-manager')
+  async registerManager(
+    @Body() registerDto: RegisterDto,
+    @Res() res: Response,
+  ) {
+    try {
+      const { user, token } =
+        await this.authService.registerManager(registerDto);
+
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // use secure cookies in production
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
+      });
+
+      return res.send({ uid: user.id });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   @UseGuards(AuthService)
   @Get('check-token')
   async checkToken() {

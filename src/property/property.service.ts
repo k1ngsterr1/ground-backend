@@ -24,8 +24,26 @@ export class PropertiesService {
     });
   }
 
-  async findAll() {
-    return this.prisma.property.findMany();
+  async findAll(filters: {
+    priceMin?: number;
+    priceMax?: number;
+    squareMin?: number;
+    squareMax?: number;
+    location?: string;
+  }) {
+    const { priceMin, priceMax, squareMin, squareMax, location } = filters;
+
+    return this.prisma.property.findMany({
+      where: {
+        ...(priceMin !== undefined && { price: { gte: priceMin } }),
+        ...(priceMax !== undefined && { price: { lte: priceMax } }),
+        ...(squareMin !== undefined && { square: { gte: squareMin } }),
+        ...(squareMax !== undefined && { square: { lte: squareMax } }),
+        ...(location && {
+          location: { contains: location, mode: 'insensitive' },
+        }),
+      },
+    });
   }
 
   async findOne(id: number) {
@@ -43,6 +61,15 @@ export class PropertiesService {
     return this.prisma.property.update({
       where: { id },
       data: updatePropertyDto,
+    });
+  }
+
+  async getAllLocations() {
+    return this.prisma.property.findMany({
+      select: {
+        location: true,
+      },
+      distinct: ['location'],
     });
   }
 

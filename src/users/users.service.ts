@@ -14,9 +14,14 @@ export class UsersService {
   }
 
   async findAll() {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        role: true,
+      },
+    });
   }
-
   async findOne(id: number) {
     const user = await this.prisma.user.findUnique({
       where: { id },
