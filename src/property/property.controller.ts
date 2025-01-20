@@ -5,6 +5,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -83,11 +84,50 @@ export class PropertiesController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
+  @UseInterceptors(
+    FilesInterceptor('image', 10, {
+      storage: fileStorage('./uploads'),
+      fileFilter: imageFileFilter,
+    }),
+  )
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @UploadedFiles() files: Array<Express.Multer.File>,
     @Body() updatePropertyDto: UpdatePropertyDto,
   ) {
-    return this.propertiesService.update(+id, updatePropertyDto);
+    console.log('Files:', files); // Log uploaded files
+    console.log('Form Data (Before Processing):', updatePropertyDto); // Log parsed form data
+
+    // Convert price to a number if it exists and is a string
+    if (
+      updatePropertyDto.price &&
+      typeof updatePropertyDto.price === 'string'
+    ) {
+      updatePropertyDto.price = parseFloat(updatePropertyDto.price);
+    }
+
+    if (
+      updatePropertyDto.square &&
+      typeof updatePropertyDto.square === 'string'
+    ) {
+      updatePropertyDto.square = parseFloat(updatePropertyDto.square);
+    }
+
+    if (
+      updatePropertyDto.number &&
+      typeof updatePropertyDto.number === 'string'
+    ) {
+      updatePropertyDto.number = parseFloat(updatePropertyDto.number);
+    }
+
+    // Include files in the DTO if necessary
+    if (files && files.length > 0) {
+      updatePropertyDto.image = files.map((file) => file.path);
+    }
+
+    console.log('Form Data (After Processing):', updatePropertyDto); // Log updated form data
+
+    return this.propertiesService.update(id, updatePropertyDto);
   }
 
   @UseGuards(AdminGuard)

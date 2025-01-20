@@ -58,6 +58,9 @@ export class PropertiesService {
 
   async update(id: number, updatePropertyDto: UpdatePropertyDto) {
     const property = await this.findOne(id); // Ensures property exists
+    console.log('Existing Property:', property);
+    console.log('Update Data:', updatePropertyDto);
+
     return this.prisma.property.update({
       where: { id },
       data: updatePropertyDto,
