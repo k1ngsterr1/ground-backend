@@ -74,6 +74,8 @@ export class PropertiesController {
     return this.propertiesService.findOne(+id);
   }
 
+  //  TEST
+
   @Get('/get/locations')
   async getAllLocations() {
     const locations = await this.propertiesService.getAllLocations();
