@@ -15,14 +15,13 @@ export class UploadController {
   @Post('/uploadImage')
   @UseInterceptors(FileInterceptor('file'))
   async uploadImage(@Request() req, @UploadedFile() file) {
-    console.log('test1');
-    return this.uploadService.uploadImage(req, file);
+    return this.uploadService.uploadImage(file);
   }
 
   @Post('/uploadFile')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@Request() req, @UploadedFile() file) {
     console.log('test2');
-    return this.uploadService.uploadFile(req, file);
+    return this.uploadService.uploadFile(file);
   }
 }

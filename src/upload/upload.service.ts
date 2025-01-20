@@ -1,4 +1,4 @@
-import { Injectable, Request, UploadedFile } from '@nestjs/common';
+import { Injectable, UploadedFile } from '@nestjs/common';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { PrismaService } from 'src/shared/prisma/prisma.service';
@@ -25,24 +25,20 @@ export const imageFileFilter = (req, file, callback) => {
 export class UploadService {
   constructor(private prisma: PrismaService) {}
 
-  private getBasePath(req: any): string {
+  // Always use the production domain
+  private getBasePath(): string {
     const basePath = '/api/uploads';
-    const host =
-      process.env.NODE_ENV === 'production'
-        ? 'https://xn----92-53d6cjmsd6amk0d.xn--p1ai'
-        : `${req.protocol}://${req.get('Host')}`;
+    const host = 'https://xn----92-53d6cjmsd6amk0d.xn--p1ai'; // Hardcoded domain
     return `${host}${basePath}`;
   }
 
-  async uploadImage(@Request() req, @UploadedFile() file) {
-    const fileUrl = `${this.getBasePath(req)}/${file.filename}`;
-
+  async uploadImage(@UploadedFile() file) {
+    const fileUrl = `${this.getBasePath()}/${file.filename}`;
     return { url: fileUrl };
   }
 
-  async uploadFile(@Request() req, @UploadedFile() file) {
-    const fileUrl = `${this.getBasePath(req)}/${file.filename}`;
-
+  async uploadFile(@UploadedFile() file) {
+    const fileUrl = `${this.getBasePath()}/${file.filename}`;
     return { url: fileUrl };
   }
 }
