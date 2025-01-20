@@ -28,7 +28,14 @@ export class UploadService {
   private getBasePath(req: any): string {
     const basePath =
       process.env.NODE_ENV === 'production' ? '/api/uploads' : '/uploads';
-    return `${req.protocol}://${req.get('Host')}${basePath}`;
+
+    // Use a production domain if in production, otherwise default to the request host
+    const host =
+      process.env.NODE_ENV === 'production'
+        ? 'https://xn----92-53d6cjmsd6amk0d.xn--p1ai'
+        : `${req.protocol}://${req.get('Host')}`;
+
+    return `${host}${basePath}`;
   }
 
   async uploadImage(@Request() req, @UploadedFile() file) {
