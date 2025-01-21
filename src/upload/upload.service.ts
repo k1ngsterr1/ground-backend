@@ -14,7 +14,7 @@ export const fileStorage = (destination: string) =>
     },
   });
 
-export const imageFileFilter = (req, file, callback) => {
+export const fileFilter = (req, file, callback) => {
   if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
     return callback(new Error('Only image files are allowed!'), false);
   }
