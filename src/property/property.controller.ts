@@ -33,7 +33,7 @@ export class PropertiesController {
 
   @Post()
   @UseInterceptors(
-    FilesInterceptor('image', 10, {
+    FilesInterceptor('image', 50, {
       storage: fileStorage('./uploads'),
       fileFilter: imageFileFilter,
     }),
@@ -85,7 +85,7 @@ export class PropertiesController {
 
   @Patch(':id')
   @UseInterceptors(
-    FilesInterceptor('image', 10, {
+    FilesInterceptor('image', 50, {
       storage: fileStorage('./uploads'),
       fileFilter: imageFileFilter,
     }),

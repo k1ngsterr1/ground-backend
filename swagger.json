@@ -163,9 +163,9 @@
         ]
       }
     },
-    "/api/upload/uploadImage": {
+    "/api/upload/uploadImages": {
       "post": {
-        "operationId": "UploadController_uploadImage",
+        "operationId": "UploadController_uploadImages",
         "parameters": [],
         "responses": {
           "201": {
@@ -746,7 +746,7 @@
             "description": "Price of the property"
           },
           "number": {
-            "type": "number",
+            "type": "string",
             "example": 10,
             "description": "Contact number for the property"
           },
