@@ -356,6 +356,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "number",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -706,6 +714,11 @@
             "example": 1,
             "description": "The unique identifier for the property"
           },
+          "link": {
+            "type": "string",
+            "example": "https://example.com",
+            "description": "Announcement Link (External)"
+          },
           "name": {
             "type": "string",
             "example": "Luxury Apartment",
@@ -770,6 +783,7 @@
         },
         "required": [
           "id",
+          "link",
           "name",
           "image",
           "square",

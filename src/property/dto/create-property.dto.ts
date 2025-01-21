@@ -9,6 +9,12 @@ export class CreatePropertyDto {
   id: number;
 
   @ApiProperty({
+    example: 'https://example.com',
+    description: 'Announcement Link (External)',
+  })
+  link: string;
+
+  @ApiProperty({
     example: 'Luxury Apartment',
     description: 'The name of the property',
   })

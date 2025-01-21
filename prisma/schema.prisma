@@ -46,6 +46,7 @@ model Property {
   agent Boolean
   owner Boolean
   type  String
+  link      String?      // Make the column optional
   description   String
   location  String
     favoritedBy Favorite[] // Relation to the Favorite model
