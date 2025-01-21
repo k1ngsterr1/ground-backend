@@ -24,8 +24,8 @@ async function bootstrap() {
   // Save the Swagger JSON to a file
   writeFileSync('./swagger.json', JSON.stringify(document, null, 2));
 
-  app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+  app.use(bodyParser.json({ limit: '5000mb' }));
+  app.use(bodyParser.urlencoded({ limit: '5000mb', extended: true }));
 
   // Enable CORS for all origins
   app.enableCors({
