@@ -13,7 +13,7 @@ export class PropertiesService {
         ...createPropertyDto,
         square: Number(createPropertyDto.square),
         price: Number(createPropertyDto.price),
-        number: Number(createPropertyDto.number),
+        number: createPropertyDto.number,
         agent:
           createPropertyDto.agent === ('true' as any) ||
           createPropertyDto.agent === true, // Convert to boolean if string
@@ -30,7 +30,7 @@ export class PropertiesService {
     squareMin?: number;
     squareMax?: number;
     location?: string;
-    number?: number;
+    number?: string;
   }) {
     const { priceMin, priceMax, squareMin, squareMax, location, number } =
       filters;

@@ -68,7 +68,7 @@ export class PropertiesController {
       squareMin: squareMin ? +squareMin : undefined,
       squareMax: squareMax ? +squareMax : undefined,
       location,
-      number: number ? +number : undefined, // Convert number to numeric
+      number: number ? number : undefined, // Convert number to numeric
     });
   }
 
@@ -111,13 +111,6 @@ export class PropertiesController {
       typeof updatePropertyDto.square === 'string'
     ) {
       updatePropertyDto.square = parseFloat(updatePropertyDto.square);
-    }
-
-    if (
-      updatePropertyDto.number &&
-      typeof updatePropertyDto.number === 'string'
-    ) {
-      updatePropertyDto.number = parseFloat(updatePropertyDto.number);
     }
 
     // Include files in the DTO if necessary

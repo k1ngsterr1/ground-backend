@@ -33,7 +33,7 @@ export class CreatePropertyDto {
   price: number;
 
   @ApiProperty({ example: 10, description: 'Contact number for the property' })
-  number: number;
+  number: string;
 
   @ApiProperty({
     example: 'contact@example.com',
