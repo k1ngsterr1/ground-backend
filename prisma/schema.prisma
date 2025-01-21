@@ -36,23 +36,23 @@ model Favorite {
 
 
 model Property {
-  id        Int          @id @default(autoincrement())
-  name    String
-  image String[]
-  square Int
-  price Int
-  number Int
-  contact String
-  agent Boolean
-  owner Boolean
-  type  String
-  link      String?      // Make the column optional
-  description   String
-  location  String
-    favoritedBy Favorite[] // Relation to the Favorite model
-      comparisonProperties ComparisonProperty[]
-
+  id                     Int                  @id @default(autoincrement())
+  name                   String
+  image                  String[]
+  square                 Float                // Изменено с Int на Float
+  price                  Int
+  number                 String
+  contact                String
+  agent                  Boolean
+  owner                  Boolean
+  type                   String
+  link                   String?              // Make the column optional
+  description            String
+  location               String
+  favoritedBy            Favorite[]           // Relation to the Favorite model
+  comparisonProperties   ComparisonProperty[] // Relation to the ComparisonProperty model
 }
+
 
 model Comparison {
   id          Int          @id @default(autoincrement())
