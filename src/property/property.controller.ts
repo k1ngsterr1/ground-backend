@@ -15,7 +15,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { fileStorage, imageFileFilter } from 'src/upload/upload.service';
+import { fileStorage, fileFilter } from 'src/upload/upload.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 import { PropertiesService } from './property.service';
@@ -33,9 +33,9 @@ export class PropertiesController {
 
   @Post()
   @UseInterceptors(
-    FilesInterceptor('image', 50, {
+    FilesInterceptor('file', 50, {
       storage: fileStorage('./uploads'),
-      fileFilter: imageFileFilter,
+      fileFilter: fileFilter,
     }),
   )
   create(
@@ -85,9 +85,9 @@ export class PropertiesController {
 
   @Patch(':id')
   @UseInterceptors(
-    FilesInterceptor('image', 50, {
+    FilesInterceptor('file', 50, {
       storage: fileStorage('./uploads'),
-      fileFilter: imageFileFilter,
+      fileFilter: fileFilter,
     }),
   )
   async update(
