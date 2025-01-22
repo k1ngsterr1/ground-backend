@@ -105,6 +105,20 @@ export class PropertiesController {
       (file) => `${baseUrl}/uploads/${file.filename}`,
     );
 
+    if (
+      updatePropertyDto.price &&
+      typeof updatePropertyDto.price === 'string'
+    ) {
+      updatePropertyDto.price = parseFloat(updatePropertyDto.price);
+    }
+
+    if (
+      updatePropertyDto.square &&
+      typeof updatePropertyDto.square === 'string'
+    ) {
+      updatePropertyDto.square = parseFloat(updatePropertyDto.square);
+    }
+
     console.log('New Image URLs:', newImageUrls);
 
     // Получаем существующие ссылки из DTO
