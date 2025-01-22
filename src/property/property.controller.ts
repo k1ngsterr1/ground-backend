@@ -113,9 +113,14 @@ export class PropertiesController {
       updatePropertyDto.square = parseFloat(updatePropertyDto.square);
     }
 
-    // Include files in the DTO if necessary
+    // Generate full URLs for the uploaded files and include them in the DTO
     if (files && files.length > 0) {
-      updatePropertyDto.image = files.map((file) => file.path);
+      const imageUrls = files.map(
+        (file) =>
+          `${process.env.BASE_URL || 'https://xn----92-53d6cjmsd6amk0d.xn--p1ai/api'}/uploads/${file.filename}`,
+      );
+
+      updatePropertyDto.image = imageUrls;
     }
 
     console.log('Form Data (After Processing):', updatePropertyDto); // Log updated form data
