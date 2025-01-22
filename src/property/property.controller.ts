@@ -86,25 +86,26 @@ export class PropertiesController {
   @Patch(':id')
   @UseInterceptors(
     FilesInterceptor('image', 50, {
-      storage: fileStorage('./uploads'), // Проверьте правильность пути
-      fileFilter: fileFilter, // Проверьте работу фильтра
+      storage: fileStorage('./uploads'),
+      fileFilter: fileFilter,
     }),
   )
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @UploadedFiles() files: Array<Express.Multer.File>, // Получаем загруженные файлы
-    @Body() updatePropertyDto: UpdatePropertyDto, // Получаем данные из тела запроса
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Body() updatePropertyDto: UpdatePropertyDto,
   ) {
-    console.log('Files:', files); // Лог загруженных файлов
-    console.log('Form Data (Before Processing):', updatePropertyDto); // Лог DTO до обработки
+    console.log('Files:', files); // Log uploaded files
+    console.log('Form Data (Before Processing):', updatePropertyDto); // Log parsed form data
 
-    // Преобразование строковых значений в числа (цена, площадь)
+    // Convert price to a number if it exists and is a string
     if (
       updatePropertyDto.price &&
       typeof updatePropertyDto.price === 'string'
     ) {
       updatePropertyDto.price = parseFloat(updatePropertyDto.price);
     }
+
     if (
       updatePropertyDto.square &&
       typeof updatePropertyDto.square === 'string'
@@ -112,49 +113,14 @@ export class PropertiesController {
       updatePropertyDto.square = parseFloat(updatePropertyDto.square);
     }
 
-    // Обработка изображений
-    let existingImages: string[] = [];
-    if (updatePropertyDto.image) {
-      if (typeof updatePropertyDto.image === 'string') {
-        // Если приходит строка, преобразуем в массив
-        existingImages = [updatePropertyDto.image];
-      } else if (Array.isArray(updatePropertyDto.image)) {
-        // Фильтруем существующие ссылки
-        existingImages = updatePropertyDto.image.filter((img) =>
-          img.startsWith('http'),
-        );
-      }
-    }
-
-    console.log('Existing Images:', existingImages); // Лог существующих ссылок
-
-    // Добавление новых изображений, если файлы загружены
+    // Include files in the DTO if necessary
     if (files && files.length > 0) {
-      const uploadedImageUrls = files.map(
-        (file) =>
-          `${process.env.BASE_URL || 'https://xn----92-53d6cjmsd6amk0d.xn--p1ai/api'}/uploads/${file.filename}`,
-      );
-
-      console.log('Uploaded Image URLs:', uploadedImageUrls); // Лог новых ссылок
-
-      // Объединяем старые и новые ссылки
-      updatePropertyDto.image = [...existingImages, ...uploadedImageUrls];
-    } else {
-      // Сохраняем только старые ссылки, если файлов нет
-      updatePropertyDto.image = existingImages;
+      updatePropertyDto.image = files.map((file) => file.path);
     }
 
-    console.log('Form Data (After Processing):', updatePropertyDto); // Лог DTO после обработки
+    console.log('Form Data (After Processing):', updatePropertyDto); // Log updated form data
 
-    // Обновляем данные в базе данных
-    const updatedProperty = await this.propertiesService.update(
-      id,
-      updatePropertyDto,
-    );
-
-    console.log('Updated Property:', updatedProperty); // Лог результата обновления
-
-    return updatedProperty;
+    return this.propertiesService.update(id, updatePropertyDto);
   }
 
   @UseGuards(AdminGuard)
