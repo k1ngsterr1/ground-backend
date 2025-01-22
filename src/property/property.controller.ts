@@ -95,10 +95,10 @@ export class PropertiesController {
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Body() updatePropertyDto: UpdatePropertyDto,
   ) {
-    console.log('Files:', files); // Log uploaded files
-    console.log('Form Data (Before Processing):', updatePropertyDto); // Log parsed form data
+    console.log('Files:', files); // Лог загруженных файлов
+    console.log('Form Data (Before Processing):', updatePropertyDto); // Лог данных до обработки
 
-    // Convert price to a number if it exists and is a string
+    // Преобразование цены и площади в числа, если они были строками
     if (
       updatePropertyDto.price &&
       typeof updatePropertyDto.price === 'string'
@@ -113,13 +113,22 @@ export class PropertiesController {
       updatePropertyDto.square = parseFloat(updatePropertyDto.square);
     }
 
-    // Include files in the DTO if necessary
+    // Обработка файлов и преобразование в ссылки
     if (files && files.length > 0) {
-      updatePropertyDto.image = files.map((file) => file.path);
+      // Преобразуем пути файлов в полные URL
+      const baseUrl =
+        process.env.BASE_URL || 'https://xn----92-53d6cjmsd6amk0d.xn--p1ai/api';
+      const uploadedImageUrls = files.map(
+        (file) => `${baseUrl}/uploads/${file.filename}`,
+      );
+
+      // Добавляем ссылки на изображения в DTO
+      updatePropertyDto.image = uploadedImageUrls;
     }
 
-    console.log('Form Data (After Processing):', updatePropertyDto); // Log updated form data
+    console.log('Form Data (After Processing):', updatePropertyDto); // Лог данных после обработки
 
+    // Сохраняем обновленные данные через сервис
     return this.propertiesService.update(id, updatePropertyDto);
   }
 
