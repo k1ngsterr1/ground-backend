@@ -95,10 +95,10 @@ export class PropertiesController {
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Body() updatePropertyDto: UpdatePropertyDto,
   ) {
-    console.log('Files:', files); // Log uploaded files
-    console.log('Form Data (Before Processing):', updatePropertyDto); // Log parsed form data
+    console.log('Files:', files); // Лог загруженных файлов
+    console.log('Form Data (Before Processing):', updatePropertyDto); // Лог данных до обработки
 
-    // Convert price to a number if it exists and is a string
+    // Преобразование строки в число для цены и площади, если требуется
     if (
       updatePropertyDto.price &&
       typeof updatePropertyDto.price === 'string'
@@ -113,17 +113,28 @@ export class PropertiesController {
       updatePropertyDto.square = parseFloat(updatePropertyDto.square);
     }
 
-    // Generate full URLs for the uploaded files and include them in the DTO
+    // Проверка и обработка загруженных файлов
+    let existingImages: string[] = [];
+    if (Array.isArray(updatePropertyDto.image)) {
+      existingImages = updatePropertyDto.image.filter((img) =>
+        img.startsWith('http'),
+      );
+    }
+
     if (files && files.length > 0) {
-      const imageUrls = files.map(
+      const uploadedImageUrls = files.map(
         (file) =>
           `${process.env.BASE_URL || 'https://xn----92-53d6cjmsd6amk0d.xn--p1ai/api'}/uploads/${file.filename}`,
       );
 
-      updatePropertyDto.image = imageUrls;
+      // Добавляем ссылки на новые файлы и оставляем старые, если они есть
+      updatePropertyDto.image = [...existingImages, ...uploadedImageUrls];
+    } else {
+      // Если новых файлов нет, сохраняем только существующие ссылки
+      updatePropertyDto.image = existingImages;
     }
 
-    console.log('Form Data (After Processing):', updatePropertyDto); // Log updated form data
+    console.log('Form Data (After Processing):', updatePropertyDto); // Лог данных после обработки
 
     return this.propertiesService.update(id, updatePropertyDto);
   }
