@@ -98,7 +98,7 @@ export class PropertiesController {
     console.log('Files:', files); // Лог загруженных файлов
     console.log('Form Data (Before Processing):', updatePropertyDto); // Лог данных до обработки
 
-    // Преобразование цены и площади в числа, если они передаются как строки
+    // Преобразование строки в число (если требуется)
     if (
       updatePropertyDto.price &&
       typeof updatePropertyDto.price === 'string'
@@ -112,19 +112,35 @@ export class PropertiesController {
       updatePropertyDto.square = parseFloat(updatePropertyDto.square);
     }
 
-    // Обработка загруженных файлов: создаём ссылки на файлы
+    // Инициализируем массив ссылок на существующие изображения
+    let existingImages: string[] = [];
+    if (updatePropertyDto.image) {
+      if (typeof updatePropertyDto.image === 'string') {
+        // Если одно изображение передано как строка, преобразуем его в массив
+        existingImages = [updatePropertyDto.image];
+      } else if (Array.isArray(updatePropertyDto.image)) {
+        // Если это массив, используем его как есть
+        existingImages = updatePropertyDto.image;
+      }
+    }
+
+    console.log('Existing Images:', existingImages); // Лог существующих ссылок
+
+    // Создаем ссылки для новых загруженных файлов
     const baseUrl =
       process.env.BASE_URL || 'https://xn----92-53d6cjmsd6amk0d.xn--p1ai/api';
-    const imageUrls = files.map(
+    const uploadedImageUrls = files.map(
       (file) => `${baseUrl}/uploads/${file.filename}`,
     );
 
-    // Добавляем ссылки на новые изображения в DTO
-    updatePropertyDto.image = imageUrls;
+    console.log('Uploaded Image URLs:', uploadedImageUrls); // Лог новых ссылок
 
-    console.log('Form Data (After Processing):', updatePropertyDto); // Лог после обработки
+    // Объединяем существующие ссылки с новыми
+    updatePropertyDto.image = [...existingImages, ...uploadedImageUrls];
 
-    // Вызываем сервис для обновления данных
+    console.log('Form Data (After Processing):', updatePropertyDto); // Лог после объединения ссылок
+
+    // Обновляем данные через сервис
     return this.propertiesService.update(id, updatePropertyDto);
   }
 
