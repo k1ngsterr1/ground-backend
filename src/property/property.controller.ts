@@ -98,14 +98,13 @@ export class PropertiesController {
     console.log('Files:', files); // Лог загруженных файлов
     console.log('Form Data (Before Processing):', updatePropertyDto); // Лог данных до обработки
 
-    // Преобразование цены и площади в числа, если они были строками
+    // Преобразование цены и площади в числа
     if (
       updatePropertyDto.price &&
       typeof updatePropertyDto.price === 'string'
     ) {
       updatePropertyDto.price = parseFloat(updatePropertyDto.price);
     }
-
     if (
       updatePropertyDto.square &&
       typeof updatePropertyDto.square === 'string'
@@ -113,22 +112,42 @@ export class PropertiesController {
       updatePropertyDto.square = parseFloat(updatePropertyDto.square);
     }
 
-    // Обработка файлов и преобразование в ссылки
+    // Инициализация массива для существующих ссылок
+    let existingImages: string[] = [];
+    if (updatePropertyDto.image) {
+      if (typeof updatePropertyDto.image === 'string') {
+        // Если приходит одна ссылка в виде строки, преобразуем в массив
+        existingImages = [updatePropertyDto.image];
+      } else if (Array.isArray(updatePropertyDto.image)) {
+        // Если это массив, фильтруем только уже существующие ссылки
+        existingImages = updatePropertyDto.image.filter((img) =>
+          img.startsWith('http'),
+        );
+      }
+    }
+
+    console.log('Existing Images:', existingImages); // Лог существующих ссылок
+
+    // Добавляем новые файлы (ссылки)
     if (files && files.length > 0) {
-      // Преобразуем пути файлов в полные URL
       const baseUrl =
         process.env.BASE_URL || 'https://xn----92-53d6cjmsd6amk0d.xn--p1ai/api';
-      const uploadedImageUrls = files.map(
+      const newImageUrls = files.map(
         (file) => `${baseUrl}/uploads/${file.filename}`,
       );
 
-      // Добавляем ссылки на изображения в DTO
-      updatePropertyDto.image = uploadedImageUrls;
+      console.log('New Image URLs:', newImageUrls); // Лог новых ссылок
+
+      // Объединяем существующие ссылки с новыми
+      updatePropertyDto.image = [...existingImages, ...newImageUrls];
+    } else {
+      // Если файлов нет, сохраняем только существующие ссылки
+      updatePropertyDto.image = existingImages;
     }
 
     console.log('Form Data (After Processing):', updatePropertyDto); // Лог данных после обработки
 
-    // Сохраняем обновленные данные через сервис
+    // Обновление данных
     return this.propertiesService.update(id, updatePropertyDto);
   }
 
