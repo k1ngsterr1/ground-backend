@@ -16,7 +16,7 @@ export class UploadController {
 
   @Post('/uploadImages')
   @UseInterceptors(
-    FilesInterceptor('files', 50, {
+    FilesInterceptor('image', 50, {
       // Лимит: до 50 файлов
       storage: diskStorage({
         destination: './uploads', // Путь для сохранения файлов
@@ -39,9 +39,8 @@ export class UploadController {
   }
 
   @Post('/uploadFile')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('image'))
   async uploadFile(@Request() req, @UploadedFile() file) {
-    console.log('test2');
     return this.uploadService.uploadFile(file);
   }
 }
