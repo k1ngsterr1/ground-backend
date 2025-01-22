@@ -92,13 +92,13 @@ export class PropertiesController {
   )
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @UploadedFiles() files: Array<Express.Multer.File>,
-    @Body() updatePropertyDto: UpdatePropertyDto,
+    @UploadedFiles() files: Array<Express.Multer.File>, // Получаем новые файлы
+    @Body() updatePropertyDto: UpdatePropertyDto, // DTO с остальными данными
   ) {
-    console.log('Files:', files); // Log uploaded files
-    console.log('Form Data (Before Processing):', updatePropertyDto); // Log parsed form data
+    console.log('Files:', files); // Лог загруженных файлов
+    console.log('Form Data (Before Processing):', updatePropertyDto); // Лог данных до обработки
 
-    // Convert price to a number if it exists and is a string
+    // Преобразуем строку price в число, если это строка
     if (
       updatePropertyDto.price &&
       typeof updatePropertyDto.price === 'string'
@@ -106,6 +106,7 @@ export class PropertiesController {
       updatePropertyDto.price = parseFloat(updatePropertyDto.price);
     }
 
+    // Преобразуем строку square в число, если это строка
     if (
       updatePropertyDto.square &&
       typeof updatePropertyDto.square === 'string'
@@ -113,14 +114,37 @@ export class PropertiesController {
       updatePropertyDto.square = parseFloat(updatePropertyDto.square);
     }
 
-    // Include files in the DTO if necessary
-    if (files && files.length > 0) {
-      updatePropertyDto.image = files.map((file) => file.path);
-    }
+    // Получаем существующие изображения из DTO
+    const existingImages =
+      typeof updatePropertyDto.image === 'string'
+        ? [updatePropertyDto.image] // Если это строка, превращаем в массив
+        : updatePropertyDto.image || []; // Если это массив, используем его, иначе пустой массив
 
-    console.log('Form Data (After Processing):', updatePropertyDto); // Log updated form data
+    // Генерируем ссылки для новых файлов
+    const baseUrl =
+      process.env.BASE_URL || 'https://xn----92-53d6cjmsd6amk0d.xn--p1ai/api';
+    const newImageUrls = files.map(
+      (file) => `${baseUrl}/uploads/${file.filename}`,
+    );
 
-    return this.propertiesService.update(id, updatePropertyDto);
+    console.log('New Image URLs:', newImageUrls); // Лог новых ссылок
+
+    // Объединяем существующие ссылки с новыми
+    const updatedImages = [...existingImages, ...newImageUrls];
+
+    // Обновляем DTO
+    updatePropertyDto.image = updatedImages;
+
+    console.log('Form Data (After Processing):', updatePropertyDto); // Лог данных после обработки
+
+    // Обновляем объект через сервис
+    const updatedProperty = await this.propertiesService.update(
+      id,
+      updatePropertyDto,
+    );
+
+    // Возвращаем обновленный объект
+    return updatedProperty;
   }
 
   @UseGuards(AdminGuard)
