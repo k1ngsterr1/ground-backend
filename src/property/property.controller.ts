@@ -44,7 +44,7 @@ export class PropertiesController {
   ) {
     const imageUrls = files.map(
       (file) =>
-        `${process.env.BASE_URL || 'http://localhost:6001'}/uploads/${file.filename}`,
+        `${process.env.BASE_URL || 'https://xn----92-53d6cjmsd6amk0d.xn--p1ai/api'}/uploads/${file.filename}`,
     );
 
     createPropertyDto.image = imageUrls;
