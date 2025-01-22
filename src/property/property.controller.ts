@@ -92,57 +92,41 @@ export class PropertiesController {
   )
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @UploadedFiles() files: Array<Express.Multer.File>,
-    @Body() updatePropertyDto: UpdatePropertyDto,
+    @UploadedFiles() files: Array<Express.Multer.File>, // Получаем загруженные файлы
+    @Body() updatePropertyDto: any, // DTO с остальными данными
   ) {
-    console.log('Files:', files); // Лог загруженных файлов
-    console.log('Form Data (Before Processing):', updatePropertyDto); // Лог данных до обработки
+    console.log('Uploaded Files:', files);
+    console.log('Form Data:', updatePropertyDto);
 
-    // Преобразование строки в число (если требуется)
-    if (
-      updatePropertyDto.price &&
-      typeof updatePropertyDto.price === 'string'
-    ) {
-      updatePropertyDto.price = parseFloat(updatePropertyDto.price);
-    }
-    if (
-      updatePropertyDto.square &&
-      typeof updatePropertyDto.square === 'string'
-    ) {
-      updatePropertyDto.square = parseFloat(updatePropertyDto.square);
-    }
-
-    // Инициализируем массив ссылок на существующие изображения
-    let existingImages: string[] = [];
-    if (updatePropertyDto.image) {
-      if (typeof updatePropertyDto.image === 'string') {
-        // Если одно изображение передано как строка, преобразуем его в массив
-        existingImages = [updatePropertyDto.image];
-      } else if (Array.isArray(updatePropertyDto.image)) {
-        // Если это массив, используем его как есть
-        existingImages = updatePropertyDto.image;
-      }
-    }
-
-    console.log('Existing Images:', existingImages); // Лог существующих ссылок
-
-    // Создаем ссылки для новых загруженных файлов
+    // Генерируем ссылки для загруженных файлов
     const baseUrl =
       process.env.BASE_URL || 'https://xn----92-53d6cjmsd6amk0d.xn--p1ai/api';
-    const uploadedImageUrls = files.map(
-      (file) =>
-        `https://xn----92-53d6cjmsd6amk0d.xn--p1ai/api/uploads/${file.filename}`,
+    const newImageUrls = files.map(
+      (file) => `${baseUrl}/uploads/${file.filename}`,
     );
 
-    console.log('Uploaded Image URLs:', uploadedImageUrls); // Лог новых ссылок
+    console.log('New Image URLs:', newImageUrls);
 
-    // Объединяем существующие ссылки с новыми
-    updatePropertyDto.image = [...existingImages, ...uploadedImageUrls];
+    // Получаем существующие ссылки из DTO
+    const existingImages =
+      typeof updatePropertyDto.image === 'string'
+        ? [updatePropertyDto.image]
+        : updatePropertyDto.image || [];
 
-    console.log('Form Data (After Processing):', updatePropertyDto); // Лог после объединения ссылок
+    // Объединяем существующие и новые ссылки
+    const updatedImages = [...existingImages, ...newImageUrls];
+    updatePropertyDto.image = updatedImages;
 
-    // Обновляем данные через сервис
-    return this.propertiesService.update(id, updatePropertyDto);
+    console.log('Updated DTO:', updatePropertyDto);
+
+    // Сохраняем изменения через сервис
+    const updatedProperty = await this.propertiesService.update(
+      id,
+      updatePropertyDto,
+    );
+
+    // Возвращаем полностью обновленный объект
+    return updatedProperty;
   }
 
   @UseGuards(AdminGuard)
