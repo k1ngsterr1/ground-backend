@@ -130,7 +130,8 @@ export class PropertiesController {
     const baseUrl =
       process.env.BASE_URL || 'https://xn----92-53d6cjmsd6amk0d.xn--p1ai/api';
     const uploadedImageUrls = files.map(
-      (file) => `${baseUrl}/uploads/${file.filename}`,
+      (file) =>
+        `https://xn----92-53d6cjmsd6amk0d.xn--p1ai/api/uploads/${file.filename}`,
     );
 
     console.log('Uploaded Image URLs:', uploadedImageUrls); // Лог новых ссылок
