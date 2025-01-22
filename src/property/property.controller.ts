@@ -92,10 +92,10 @@ export class PropertiesController {
   )
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @UploadedFiles() files: Array<Express.Multer.File>, // Получаем загруженные файлы
+    @UploadedFiles() files: Express.Multer.File[], // Получаем загруженные файлы
     @Body() updatePropertyDto: any, // DTO с остальными данными
   ) {
-    console.log('Uploaded Files:', files);
+    console.log('Uploaded Files LOL:', files);
     console.log('Form Data:', updatePropertyDto);
 
     // Генерируем ссылки для загруженных файлов
