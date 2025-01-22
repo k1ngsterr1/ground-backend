@@ -15,7 +15,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { fileStorage, fileFilter } from 'src/upload/upload.service';
+import { fileFilter, fileStorage } from 'src/upload/upload.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 import { PropertiesService } from './property.service';
@@ -92,19 +92,13 @@ export class PropertiesController {
   )
   async update(
     @Param('id', ParseIntPipe) id: number,
-    @UploadedFiles() files: Express.Multer.File[], // Получаем загруженные файлы
-    @Body() updatePropertyDto: any, // DTO с остальными данными
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Body() updatePropertyDto: UpdatePropertyDto,
   ) {
-    console.log('Uploaded Files LOL:', files);
-    console.log('Form Data:', updatePropertyDto);
+    console.log('Files:', files); // Log uploaded files
+    console.log('Form Data (Before Processing):', updatePropertyDto); // Log parsed form data
 
-    // Генерируем ссылки для загруженных файлов
-    const baseUrl =
-      process.env.BASE_URL || 'https://xn----92-53d6cjmsd6amk0d.xn--p1ai/api';
-    const newImageUrls = files.map(
-      (file) => `${baseUrl}/uploads/${file.filename}`,
-    );
-
+    // Convert price to a number if it exists and is a string
     if (
       updatePropertyDto.price &&
       typeof updatePropertyDto.price === 'string'
@@ -119,28 +113,14 @@ export class PropertiesController {
       updatePropertyDto.square = parseFloat(updatePropertyDto.square);
     }
 
-    console.log('New Image URLs:', newImageUrls);
+    // Include files in the DTO if necessary
+    if (files && files.length > 0) {
+      updatePropertyDto.image = files.map((file) => file.path);
+    }
 
-    // Получаем существующие ссылки из DTO
-    const existingImages =
-      typeof updatePropertyDto.image === 'string'
-        ? [updatePropertyDto.image]
-        : updatePropertyDto.image || [];
+    console.log('Form Data (After Processing):', updatePropertyDto); // Log updated form data
 
-    // Объединяем существующие и новые ссылки
-    const updatedImages = [...existingImages, ...newImageUrls];
-    updatePropertyDto.image = updatedImages;
-
-    console.log('Updated DTO:', updatePropertyDto);
-
-    // Сохраняем изменения через сервис
-    const updatedProperty = await this.propertiesService.update(
-      id,
-      updatePropertyDto,
-    );
-
-    // Возвращаем полностью обновленный объект
-    return updatedProperty;
+    return this.propertiesService.update(id, updatePropertyDto);
   }
 
   @UseGuards(AdminGuard)
