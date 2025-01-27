@@ -49,6 +49,7 @@ model Property {
   link                   String?              // Make the column optional
   description            String
   location               String
+  details                String?
   favoritedBy            Favorite[]           // Relation to the Favorite model
   comparisonProperties   ComparisonProperty[] // Relation to the ComparisonProperty model
 }

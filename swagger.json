@@ -724,6 +724,11 @@
             "example": "Luxury Apartment",
             "description": "The name of the property"
           },
+          "details": {
+            "type": "string",
+            "example": "Test",
+            "description": "Details"
+          },
           "image": {
             "example": [
               "image1.jpg",
@@ -785,6 +790,7 @@
           "id",
           "link",
           "name",
+          "details",
           "image",
           "square",
           "price",

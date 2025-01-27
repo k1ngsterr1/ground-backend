@@ -21,6 +21,12 @@ export class CreatePropertyDto {
   name: string;
 
   @ApiProperty({
+    example: 'Test',
+    description: 'Details',
+  })
+  details: string;
+
+  @ApiProperty({
     example: ['image1.jpg', 'image2.jpg'],
     description: 'List of images for the property',
   })
