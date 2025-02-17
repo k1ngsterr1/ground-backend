@@ -59,7 +59,8 @@ export class PropertiesController {
     @Query('squareMin') squareMin?: number,
     @Query('squareMax') squareMax?: number,
     @Query('location') location?: string,
-    @Query('number') number?: string, // Accept the "number" parameter
+    @Query('number') number?: string,
+    @Query('name') name?: string, // Accept the "name" parameter
   ) {
     // Pass the filters to the service
     return this.propertiesService.findAll({
@@ -68,7 +69,8 @@ export class PropertiesController {
       squareMin: squareMin ? +squareMin : undefined,
       squareMax: squareMax ? +squareMax : undefined,
       location,
-      number: number ? number : undefined, // Convert number to numeric
+      number: number ? number : undefined,
+      name: name ? name : undefined, // Add name parameter
     });
   }
 

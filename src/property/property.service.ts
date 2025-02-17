@@ -31,8 +31,9 @@ export class PropertiesService {
     squareMax?: number;
     location?: string;
     number?: string;
+    name?: string; // Add name filter
   }) {
-    const { priceMin, priceMax, squareMin, squareMax, location, number } =
+    const { priceMin, priceMax, squareMin, squareMax, location, number, name } =
       filters;
 
     return this.prisma.property.findMany({
@@ -44,7 +45,10 @@ export class PropertiesService {
         ...(location && {
           location: { contains: location, mode: 'insensitive' },
         }),
-        ...(number !== undefined && { number: number }), // Фильтрация по номеру
+        ...(number !== undefined && { number: number }),
+        ...(name && {
+          name: { contains: name, mode: 'insensitive' }, // Case-insensitive search by name
+        }),
       },
     });
   }
