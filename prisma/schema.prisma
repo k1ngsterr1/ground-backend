@@ -10,7 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://postgres:Delta2005@localhost:5432/ground"
 }
 
 model User {
@@ -21,8 +21,6 @@ model User {
   createdAt DateTime     @default(now())
     favorites  Favorite[]
       comparisons  Comparison[]
-
-
 }
 
 model Favorite {

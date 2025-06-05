@@ -15,9 +15,24 @@ export const fileStorage = (destination: string) =>
   });
 
 export const fileFilter = (req, file, callback) => {
-  if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
-    return callback(new Error('Only image files are allowed!'), false);
+  const allowedMimeTypes = [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/webp',
+    'video/mp4',
+    'video/quicktime',
+    'video/x-msvideo',
+    'video/x-matroska', // quicktime = .mov, x-msvideo = .avi, x-matroska = .mkv
+  ];
+
+  if (!allowedMimeTypes.includes(file.mimetype)) {
+    return callback(
+      new Error('Only image and video files are allowed!'),
+      false,
+    );
   }
+
   callback(null, true);
 };
 
