@@ -149,6 +149,24 @@ export class PropertiesController {
     return updatedProperty;
   }
 
+  @Patch(':id/add-image')
+  async addImage(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('imageUrl') imageUrl: string,
+  ) {
+    if (!imageUrl) throw new NotFoundException('imageUrl is required');
+    return this.propertiesService.addImageToProperty(id, imageUrl);
+  }
+
+  @Patch(':id/remove-image')
+  async removeImage(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('imageUrl') imageUrl: string,
+  ) {
+    if (!imageUrl) throw new NotFoundException('imageUrl is required');
+    return this.propertiesService.removeImageFromProperty(id, imageUrl);
+  }
+
   @UseGuards(AdminGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Req() req: any) {

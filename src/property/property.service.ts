@@ -110,4 +110,26 @@ export class PropertiesService {
       where: { id },
     });
   }
+
+  async addImageToProperty(id: number, imageUrl: string) {
+    const property = await this.findOne(id);
+    if (!property) throw new NotFoundException('Property not found');
+    const updatedImages = [...(property.image || []), imageUrl];
+    return this.prisma.property.update({
+      where: { id },
+      data: { image: updatedImages },
+    });
+  }
+
+  async removeImageFromProperty(id: number, imageUrl: string) {
+    const property = await this.findOne(id);
+    if (!property) throw new NotFoundException('Property not found');
+    const updatedImages = (property.image || []).filter(
+      (img) => img !== imageUrl,
+    );
+    return this.prisma.property.update({
+      where: { id },
+      data: { image: updatedImages },
+    });
+  }
 }
