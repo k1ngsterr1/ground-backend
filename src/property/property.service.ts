@@ -68,9 +68,14 @@ export class PropertiesService {
     console.log('Existing Property:', property);
     console.log('Update Data:', updatePropertyDto);
 
+    // Удаляем undefined поля, чтобы не затирать их в базе
+    const data = Object.fromEntries(
+      Object.entries(updatePropertyDto).filter(([_, v]) => v !== undefined),
+    );
+
     return this.prisma.property.update({
       where: { id },
-      data: updatePropertyDto,
+      data,
     });
   }
 
