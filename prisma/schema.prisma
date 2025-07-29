@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://postgres:Delta2005@localhost:5432/ground"
+  url      = "postgresql://myuser:Delta2005_5@localhost:5432/ground"
 }
 
 model User {
